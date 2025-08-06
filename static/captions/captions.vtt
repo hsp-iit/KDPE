@@ -1,0 +1,205 @@
+WEBVTT
+
+1
+00:00:00.160 --> 00:00:03.920
+We present KDPE a Kernel density estimation strategy
+
+2
+00:00:03.920 --> 00:00:06.400
+for diffusion policy trajectory selection.
+
+3
+00:00:08.960 --> 00:00:11.080
+When diffusion policy is used in an
+
+4
+00:00:11.080 --> 00:00:12.840
+environment to complete a task,
+
+5
+00:00:12.840 --> 00:00:15.600
+only one trajectory of actions per observation
+
+6
+00:00:15.600 --> 00:00:17.040
+is sampled from the model.
+
+7
+00:00:20.080 --> 00:00:22.960
+However, the sample trajectory may not be optimal.
+
+8
+00:00:25.120 --> 00:00:25.720
+In fact,
+
+9
+00:00:25.720 --> 00:00:28.680
+an outlier trajectory could lead the model out of
+
+10
+00:00:28.680 --> 00:00:31.580
+distribution causing the failure of the task.
+
+11
+00:00:31.580 --> 00:00:34.900
+Sampling more trajectories from the same observation
+
+12
+00:00:34.900 --> 00:00:36.820
+can give us more information about
+
+13
+00:00:36.820 --> 00:00:38.460
+the conditional distribution.
+
+14
+00:00:40.780 --> 00:00:42.460
+Given the current observation,
+
+15
+00:00:42.460 --> 00:00:46.100
+our method samples N trajectories and estimates the
+
+16
+00:00:46.100 --> 00:00:49.340
+probability density distribution of the last actions.
+
+17
+00:00:51.980 --> 00:00:54.180
+To estimate the PDF of the actions,
+
+18
+00:00:54.180 --> 00:00:56.415
+we use kernel density estimation.
+
+19
+00:00:56.415 --> 00:00:59.810
+A kernel function is centered on every data points and
+
+20
+00:00:59.810 --> 00:01:02.210
+the final PDF is obtained by summing
+
+21
+00:01:02.210 --> 00:01:03.490
+all the kernel functions.
+
+22
+00:01:06.050 --> 00:01:09.210
+We use a Gaussian kernel as our KDE kernel function.
+
+23
+00:01:09.210 --> 00:01:12.369
+However, since the actions have a rotation component,
+
+24
+00:01:12.369 --> 00:01:14.930
+we need to modify the kernel to handle it.
+
+25
+00:01:14.930 --> 00:01:18.050
+This is done by finding the relative rotation between
+
+26
+00:01:18.050 --> 00:01:21.610
+the kernel mean rotation and the input rotation and
+
+27
+00:01:21.610 --> 00:01:24.295
+converting it to axis angle representation.
+
+28
+00:01:24.295 --> 00:01:25.300
+Because of this,
+
+29
+00:01:25.300 --> 00:01:28.580
+the quadratic form of the Gaussian function computes the
+
+30
+00:01:28.580 --> 00:01:30.660
+distance between the rotation components
+
+31
+00:01:30.660 --> 00:01:32.140
+as the geodesic distance.
+
+32
+00:01:34.540 --> 00:01:37.820
+Once we have estimated the densities of final actions,
+
+33
+00:01:37.820 --> 00:01:40.020
+we execute the trajectory associated
+
+34
+00:01:40.020 --> 00:01:41.900
+with the action of higher density.
+
+35
+00:01:44.300 --> 00:01:47.740
+We evaluate our algorithm on a set of seven tasks from
+
+36
+00:01:47.740 --> 00:01:50.220
+two different benchmark and measure the
+
+37
+00:01:50.220 --> 00:01:52.620
+success rate over 100 episodes.
+
+38
+00:01:55.050 --> 00:01:58.010
+The results on the benchmark show that KDP outperforms
+
+39
+00:01:58.010 --> 00:02:01.290
+the compared methods on most of the tasks and overall
+
+40
+00:02:01.290 --> 00:02:03.570
+achieves higher average success rate.
+
+41
+00:02:03.570 --> 00:02:04.370
+In particular,
+
+42
+00:02:04.370 --> 00:02:07.370
+KDPE achieves a larger performance improvement on
+
+43
+00:02:07.370 --> 00:02:10.370
+precision tasks as tool hang and on tasks
+
+44
+00:02:10.370 --> 00:02:12.170
+learned from lower quality data.
+
+45
+00:02:14.490 --> 00:02:16.769
+We also compared KDP to diffusion policy
+
+46
+00:02:16.769 --> 00:02:18.625
+on three real world tasks.
+
+47
+00:02:18.625 --> 00:02:21.280
+In the recordings you can see the three tasks
+
+48
+00:02:21.280 --> 00:02:23.880
+being successfully completed by KDPE.
+
+49
+00:02:36.910 --> 00:02:39.760
+KDPE scores better performance than the baseline
+
+50
+00:02:39.760 --> 00:02:41.840
+in all three real world tasks,
+
+51
+00:02:41.840 --> 00:02:44.360
+confirming the results observed in simulation.

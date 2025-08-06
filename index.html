@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="KDPE: A Kernel Density Estimation Strategy for Diffusion Policy Trajectory Selection">
+  <meta name="keywords" content="Robotic Learning, Trajectory Selection, Kernel Density Estimation">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KDPE: A Kernel Density Estimation Strategy for Diffusion Policy Trajectory Selection</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/favicon.png">
+
+  <style>
+    /* Style for the "Similar Initialization" video section */
+    .similar-init-stacked .videos-wrapper {
+        display: flex; /* Establishes a flex container */
+        flex-direction: column; /* Stacks children vertically */
+        align-items: center; /* Centers the stack of video items horizontally */
+    }
+
+    .similar-init-stacked .video-item {
+        width: 100%; /* Video item tries to be as wide as its parent column allows */
+        max-width: 720px; /* Caps the width of the video item. Adjust as needed. */
+        margin-bottom: 1.5rem; /* Space between stacked videos */
+    }
+
+    .similar-init-stacked .video-item:last-child {
+        margin-bottom: 0; /* No bottom margin for the last video in a stack */
+    }
+
+    .similar-init-stacked .video-item video {
+        width: 100%; /* Video element fills its .video-item container */
+        height: auto; /* Maintain aspect ratio */
+        display: block; /* Avoids potential extra space below the video */
+        border-radius: 8px; /* Optional: consistent styling */
+    }
+  </style>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+<body>
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+  <div class="navbar-menu">
+    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+      <a class="navbar-item" href="">
+      <span class="icon">
+          <i class="fas fa-home"></i>
+      </span>
+      </a>
+    </div>
+  </div>
+</nav>
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">KDPE: A Kernel Density Estimation Strategy for Diffusion Policy Trajectory Selection</h1>
+          <div class="is-size-5 publication-authors">
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <span class="link-block">
+                <a href="https://github.com/kdpe-robotics/kdpe"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>KDPE Code</span>
+                  </a>
+              </span>
+              <!-- Dataset Link. -->
+              <span class="link-block">
+                <a href="https://github.com/kdpe-robotics/trajectory-visualizer"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Visualizer Code</span>
+                  </a>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Teaser video-->
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <video poster="static/images/thumbnail.png" id="tree" controls autoplay muted height="100%">
+        <!-- Your video here -->
+        <source src="static/videos/KDPE_CoRL.mp4#t=8" type="video/mp4">
+        <track src="static/captions/captions.vtt" kind="captions" srclang="en" label="English" default>
+      </video>
+    </div>
+  </div>
+</section>
+
+<!-- Abstract -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+            <p>
+            We propose KDPE, a Kernel Density Estimation-based strategy that filters out potentially
+            harmful trajectories output of Diffusion Policy while keeping a low test-time computational overhead.
+            For Kernel Density Estimation, we propose a manifold-aware kernel to model a probability density
+            function for actions composed of end-effector Cartesian position, orientation, and gripper state.
+            </p>
+
+            <p>
+            KDPE overall achieves better performance than Diffusion Policy on simulated single-arm RoboMimic
+            and MimicGen tasks, and on three real robot experiments:
+            <i>PickPlush</i>, a tabletop grasping task,
+            <i>CubeSort</i>, a multimodal pick and place task, and
+            <i>CoffeeMaking</i>, a task that requires long-horizon capabilities and precise execution.
+            </p>
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+  </div>
+</section>
+
+<!-- Method -->
+
+<!-- Simulation Benchmark -->
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-centered">
+        <h1 class="title is-3">Simulation Experiments</h1>
+        <h1 class="title is-4">Benchmark</h1>
+        <div class="video-grid-container simulation-layout-stacked">
+            <!-- KDPE Row -->
+            <div class="video-row" id="kdpe-row">
+                <div class="row-header">
+                    <h2>RoboMimic</h2>
+                </div>
+                <div class="videos-wrapper">
+                    <div class="video-item">
+                        <img src="static/images/simulation/task_lift.gif" alt="Lift task animation">
+                        <p class="video-caption"><i>Lift</i> </p>
+                    </div>
+                    <div class="video-item">
+                        <img src="static/images/simulation/task_can.gif" alt="Can task animation">
+                        <p class="video-caption"><i>Can</i> </p>
+                    </div>
+                    <div class="video-item">
+                        <img src="static/images/simulation/task_square.gif" alt="Square task animation">
+                        <p class="video-caption"><i>Square</i> </p>
+                    </div>
+                    <div class="video-item">
+                        <img src="static/images/simulation/task_tool_hang.gif" alt="ToolHang task animation">
+                        <p class="video-caption"><i>ToolHang</i> </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Baseline Row -->
+            <div class="video-row" id="baseline-row">
+                <div class="row-header">
+                    <h2>MimicGen</h2>
+                </div>
+                <div class="videos-wrapper">
+                    <div class="video-item">
+                        <img src="static/images/simulation/task_coffee.gif" alt="Coffee task animation">
+                        <p class="video-caption"><i>Coffee</i> </p>
+                    </div>
+                    <div class="video-item">
+                        <img src="static/images/simulation/task_stack.gif" alt="Stack task animation">
+                        <p class="video-caption"><i>Stack</i> </p>
+                    </div>
+                    <div class="video-item">
+                        <img src="static/images/simulation/task_assembly.gif" alt="Assembly task animation">
+                        <p class="video-caption"><i>Assembly</i> </p>
+                    </div>
+                </div>
+            </div>
+        
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Real World Experiments -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-centered">
+        <h1 class="title is-3">Real-world Experiments</h1>
+        <h1 class="title is-4">Benchmark</h1>
+        <div class="video-grid-container">
+            <!-- KDPE Row -->
+            <div class="video-row" id="kdpe-row">
+                <div class="row-header">
+                    <h2>KDPE</h2>
+                    <select class="video-filter" id="kdpe-filter" onchange="handleVideoChange('kdpe', this.value)">
+                        <option value="success" selected>Success</option>
+                        <option value="failure">Failure</option>
+                    </select>
+                </div>
+                <div class="videos-wrapper" id="kdpe-videos">
+                    <div class="video-item">
+                        <video autoplay muted loop>
+                            <source src="" type="video/mp4">
+                        </video>
+                        <p class="video-caption"><i>PickPlush</i> <br> (success rate:  <b>96%</b>)</p>
+                    </div>
+                    <div class="video-item">
+                        <video autoplay muted loop>
+                            <source src="" type="video/mp4">
+                        </video>
+                        <p class="video-caption"><i>PickSponge</i> <br> (success rate:  <b>90%</b>)</p>
+                    </div>
+                    <div class="video-item">
+                        <video autoplay muted loop>
+                            <source src="" type="video/mp4">
+                        </video>
+                        <p class="video-caption"><i>CubeSort</i> <br> (success rate:  <b>44%</b>)</p>
+                    </div>
+                    <div class="video-item">
+                        <video autoplay muted loop>
+                            <source src="" type="video/mp4">
+                        </video>
+                        <p class="video-caption"><i>CoffeeMaking</i> <br> (success rate:  <b>70%</b>)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Baseline Row -->
+            <div class="video-row" id="baseline-row">
+                <div class="row-header">
+                    <h2>Baseline</h2>
+                    <select class="video-filter" id="baseline-filter" onchange="handleVideoChange('baseline', this.value)">
+                        <option value="success">Success</option>
+                        <option value="failure" selected>Failure</option>
+                    </select>
+                </div>
+                <div class="videos-wrapper" id="baseline-videos">
+                    <div class="video-item">
+                        <video autoplay muted loop>
+                            <source src="" type="video/mp4">
+                        </video>
+                        <p class="video-caption"><i>PickPlush</i> <br> (success rate:  90%)</p>
+                    </div>
+                    <div class="video-item">
+                        <video autoplay muted loop>
+                            <source src="" type="video/mp4">
+                        </video>
+                        <p class="video-caption"><i>PickSponge</i> <br> (success rate:  88%)</p>
+                    </div>
+                    <div class="video-item">
+                        <video autoplay muted loop>
+                            <source src="" type="video/mp4">
+                        </video>
+                        <p class="video-caption"><i>CubeSort</i> <br> (success rate:  41%)</p>
+                    </div>
+                    <div class="video-item">
+                        <video autoplay muted loop>
+                            <source src="" type="video/mp4">
+                        </video>
+                        <p class="video-caption"><i>CoffeeMaking</i> <br> (success rate:  60%)</p>
+                    </div>
+                </div>
+            </div>
+        
+        </div>
+        <!-- Added mt-6 class here for more top margin -->
+        <h1 class="title is-4 mt-6">Same Initialization</h1>
+
+        <div class="video-grid-container similar-init-stacked">
+            <!-- KDPE Row -->
+            <div class="video-row" id="kdpe-row-similar">
+                <div class="row-header">
+                    <h2>KDPE</h2>
+                </div>
+                <div class="videos-wrapper" id="kdpe-videos-similar">
+                    <div class="video-item">
+                        <video autoplay muted loop>
+                            <source src="static/videos/kdpe/pp2_success.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="video-item">
+                        <video autoplay muted loop>
+                            <source src="static/videos/kdpe/pp3_success.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Baseline Row -->
+            <div class="video-row" id="baseline-row-similar">
+                <div class="row-header">
+                    <h2>Baseline</h2>
+                </div>
+                <div class="videos-wrapper" id="baseline-videos-similar">
+                    <div class="video-item">
+                        <video autoplay muted loop>
+                            <source src="static/videos/baseline/pp2_failure.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="video-item">
+                        <video autoplay muted loop>
+                            <source src="static/videos/baseline/pp3_failure.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Visualizer -->
+ <section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column">
+        <h1 class="title is-3">Trajectory Visualizer</h1>
+        <div class="content mb-6">
+          <div class="box has-background-light p-5">
+            <p class="has-text-justified">
+              Our trajectory visualizer is tool designed to analyze the distribution of trajectories sampled by generative robotic policies. 
+              It helps in understanding the policy's behavior by revealing patterns in the sampled trajectories, identifying potential 
+              failure cases, and quantifying the amount of outliers. By visualizing hundreds of trajectories simultaneously, 
+              we can better assess the policy's consistency and robustness across different scenarios.
+            </p>
+          </div>
+        </div>
+        <div class="columns is-centered">
+          <div class="column">
+            <figure class="image">
+              <video controls autoplay muted loop>
+                <source src="static/videos/visualizer/visualizer.mp4" type="video/mp4">
+              </video>
+              <figcaption class="mt-4 is-size-6 has-text-grey">
+                <span class="mb-2">Visualization of diffusion policy completing the ToolHang task.</span>
+                <br>
+                <em>Note: The color of the trajectories represents the gripper state at the last trajectory step.</em>
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- This script handles switching from Success/Failure video -->
+<script>
+    // Video sources - captions are static in HTML
+    const videoData = {
+        kdpe: {
+            success: [
+                "static/videos/kdpe/pp_success.mp4",
+                "static/videos/kdpe/ps_success.mp4",
+                "static/videos/kdpe/cs_success.mp4",
+                "static/videos/kdpe/cm_success.mp4"
+            ],
+            failure: [
+                "static/videos/kdpe/pp_failure.mp4",
+                "static/videos/kdpe/ps_failure.mp4",
+                "static/videos/kdpe/cs_failure.mp4",
+                "static/videos/kdpe/cm_failure.mp4"
+            ]
+        },
+        baseline: {
+            success: [
+                "static/videos/baseline/pp_success.mp4",
+                "static/videos/baseline/ps_success.mp4",
+                "static/videos/baseline/cs_success.mp4",
+                "static/videos/baseline/cm_success.mp4"
+            ],
+            failure: [
+                "static/videos/baseline/pp_failure.mp4",
+                "static/videos/baseline/ps_failure.mp4",
+                "static/videos/baseline/cs_failure.mp4",
+                "static/videos/baseline/cm_failure.mp4"
+            ]
+        }
+    };
+
+    function handleVideoChange(rowType, filterValue) {
+        const videosContainer = document.getElementById(`${rowType}-videos`);
+        // Query for video elements directly within the specific row's video items
+        const videoElements = videosContainer.querySelectorAll('.video-item video');
+        const newSources = videoData[rowType][filterValue];
+
+        videoElements.forEach((videoElement, index) => {
+            if (newSources && newSources[index]) {
+                const sourceTag = videoElement.querySelector('source');
+                if (sourceTag) {
+                    sourceTag.setAttribute('src', newSources[index]);
+                    videoElement.load(); // Reload the video with the new source
+                    // videoElement.play(); // Autoplay attribute should handle playing after load if browser policies allow
+                } else {
+                    console.warn(`Video element at index ${index} in row ${rowType} is missing a <source> tag.`);
+                }
+            } else {
+                 console.warn(`No new source defined for video at index ${index} in ${rowType}-${filterValue}`);
+            }
+        });
+    }
+
+    // Initialize videos on page load
+    // Ensure the DOM is ready before trying to access elements,
+    // though placing the script at the end of body usually suffices.
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize KDPE videos based on its dropdown's default selected value
+        const kdpeFilter = document.getElementById('kdpe-filter');
+        if (kdpeFilter) {
+            handleVideoChange('kdpe', kdpeFilter.value);
+        }
+
+        // Initialize Baseline videos based on its dropdown's default selected value
+        const baselineFilter = document.getElementById('baseline-filter');
+        if (baselineFilter) {
+            handleVideoChange('baseline', baselineFilter.value);
+        }
+    });
+</script>
+
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <a class="icon-link"
+         href="">
+        <i class="fas fa-file-pdf"></i>
+      </a>
+      <a class="icon-link" href="https://github.com/kdpe-robotics/kdpe-robotics.github.io" class="external-link" disabled>
+        <i class="fab fa-github"></i>
+      </a>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website is licensed under a <a rel="license"
+                                                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+          <p>
+            This page was built using the Academic Project Page Template which was adopted from the <a href="https://nerfies.github.io/">Nerfies</a> project page. You are free to borrow the source code of this website, we just ask that you link back to this page in the footer.
+            This website is licensed under a <a href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
