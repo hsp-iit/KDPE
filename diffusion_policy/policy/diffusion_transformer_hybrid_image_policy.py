@@ -1,5 +1,7 @@
 from typing import Dict, Tuple
 import math
+import hydra
+from omegaconf import open_dict
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -9,15 +11,16 @@ from diffusers.schedulers.scheduling_ddpm import DDPMScheduler
 from diffusion_policy.model.common.normalizer import LinearNormalizer
 from diffusion_policy.policy.base_image_policy import BaseImagePolicy
 from diffusion_policy.model.diffusion.transformer_for_diffusion import TransformerForDiffusion
+from diffusion_policy.model.filters import passall
 from diffusion_policy.model.diffusion.mask_generator import LowdimMaskGenerator
 from diffusion_policy.common.robomimic_config_util import get_robomimic_config
 from robomimic.algo import algo_factory
 from robomimic.algo.algo import PolicyAlgo
 import robomimic.utils.obs_utils as ObsUtils
-import robomimic.models.base_nets as rmbn
+import robomimic.models.obs_core as rmbn
 import diffusion_policy.model.vision.crop_randomizer as dmvc
 from diffusion_policy.common.pytorch_util import dict_apply, replace_submodules
-
+from scipy.stats import mode
 
 class DiffusionTransformerHybridImagePolicy(BaseImagePolicy):
     def __init__(self, 
@@ -27,6 +30,8 @@ class DiffusionTransformerHybridImagePolicy(BaseImagePolicy):
             horizon, 
             n_action_steps, 
             n_obs_steps,
+            filter=None,
+            population=1,
             num_inference_steps=None,
             # image
             crop_shape=(76, 76),
@@ -179,6 +184,14 @@ class DiffusionTransformerHybridImagePolicy(BaseImagePolicy):
         if num_inference_steps is None:
             num_inference_steps = noise_scheduler.config.num_train_timesteps
         self.num_inference_steps = num_inference_steps
+
+        if filter is not None:
+            with open_dict(filter):
+                filter._target_ = filter.pop('target')
+            self.filter = hydra.utils.instantiate(filter, self)
+        else:
+            self.filter = passall(policy)
+        self.population = population
     
     # ========= inference  ============
     def conditional_sample(self, 
@@ -191,17 +204,19 @@ class DiffusionTransformerHybridImagePolicy(BaseImagePolicy):
         scheduler = self.noise_scheduler
 
         trajectory = torch.randn(
-            size=condition_data.shape, 
+            size=condition_data.repeat([self.population, 1, 1]).shape, 
             dtype=condition_data.dtype,
             device=condition_data.device,
             generator=generator)
+        cond = torch.repeat_interleave(cond, repeats=self.population, dim=0)
     
         # set step values
         scheduler.set_timesteps(self.num_inference_steps)
 
         for t in scheduler.timesteps:
             # 1. apply conditioning
-            trajectory[condition_mask] = condition_data[condition_mask]
+            assert (~condition_mask).all()
+            # trajectory[condition_mask] = condition_data[condition_mask]
 
             # 2. predict model output
             model_output = model(trajectory, t, cond)
@@ -214,8 +229,8 @@ class DiffusionTransformerHybridImagePolicy(BaseImagePolicy):
                 ).prev_sample
         
         # finally make sure conditioning is enforced
-        trajectory[condition_mask] = condition_data[condition_mask]        
-
+        # trajectory[condition_mask] = condition_data[condition_mask]        
+        trajectory = trajectory.reshape(-1, self.population, *trajectory.shape[1:])
         return trajectory
 
 
@@ -270,7 +285,10 @@ class DiffusionTransformerHybridImagePolicy(BaseImagePolicy):
             cond_mask,
             cond=cond,
             **self.kwargs)
-        
+
+        population = self.normalizer['action'].unnormalize(nsample)
+        nsample = self.filter(nsample)
+
         # unnormalize prediction
         naction_pred = nsample[...,:Da]
         action_pred = self.normalizer['action'].unnormalize(naction_pred)
@@ -285,7 +303,8 @@ class DiffusionTransformerHybridImagePolicy(BaseImagePolicy):
         
         result = {
             'action': action,
-            'action_pred': action_pred
+            'action_pred': action_pred,
+            'population': population
         }
         return result
 

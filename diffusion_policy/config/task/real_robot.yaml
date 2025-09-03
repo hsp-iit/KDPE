@@ -1,0 +1,64 @@
+name: coffee_making
+
+dataset_path: &dataset_path data/datasets/coffee_making_corl/coffee_making_corl.hdf5
+abs_action: &abs_action True
+image_shape: [3, 240, 240]
+
+shape_meta: &shape_meta
+  action:
+    shape: [10]
+  obs:
+    eef_pos:
+      shape: [3]
+      type: low_dim
+    eef_quat:
+      shape: [4]
+      type: low_dim
+    gripper_qpos:
+      shape: [1]
+      type: low_dim
+    eye_in_hand_image:
+      shape: ${task.image_shape}
+      type: rgb
+
+    agentview_image:
+      shape: ${task.image_shape}
+      type: rgb
+
+
+dataset:
+  _target_: diffusion_policy.dataset.robomimic_replay_image_dataset.RobomimicReplayImageDataset
+  shape_meta: *shape_meta
+  dataset_path: *dataset_path
+  horizon: ${horizon}
+  pad_before: ${eval:'${n_obs_steps}-1+${n_latency_steps}'}
+  pad_after: ${eval:'${n_action_steps}-1'}
+  n_obs_steps: ${dataset_obs_steps}
+  abs_action: *abs_action
+  rotation_rep: 'rotation_6d'
+  use_legacy_normalizer: False
+  use_cache: True
+  seed: 42
+  val_ratio: 0.02
+
+env_runner:
+  _target_: diffusion_policy.env_runner.robomimic_image_runner.RobomimicImageRunner
+  abs_action: true
+  crf: 22
+  dataset_path: ${task.dataset_path}
+  fps: 20
+  max_steps: 700
+  n_action_steps: 8
+  n_envs: 28
+  n_obs_steps: 2
+  n_test: 50
+  n_test_vis: 4
+  n_train: 6
+  n_train_vis: 2
+  past_action: false
+  render_obs_key: agentview_image
+  shape_meta: *shape_meta
+  test_start_seed: 100000
+  tqdm_interval_sec: 1.0
+  train_start_idx: 0
+

@@ -1,4 +1,4 @@
-name: square_image
+name: assembly
 
 shape_meta: &shape_meta
   # acceptable types: rgb, low_dim
@@ -17,12 +17,11 @@ shape_meta: &shape_meta
     robot0_gripper_qpos:
       shape: [2]
   action: 
-    shape: [7]
+    shape: [10]
 
-task_name: &task_name square
-dataset_type: &dataset_type ph
-dataset_path: &dataset_path data/robomimic/datasets/${task.task_name}/${task.dataset_type}/image.hdf5
-abs_action: &abs_action False
+task_name: &task_name assembly
+dataset_path: &dataset_path data/datasets/${task.task_name}/image_abs.hdf5
+abs_action: &abs_action True
 
 env_runner:
   _target_: diffusion_policy.env_runner.robomimic_image_runner.RobomimicImageRunner
@@ -35,8 +34,7 @@ env_runner:
   n_test: 50
   n_test_vis: 4
   test_start_seed: 100000
-  # use python's eval function as resolver, single-quoted string as argument
-  max_steps: ${eval:'500 if "${task.dataset_type}" == "mh" else 400'}
+  max_steps: 700
   n_obs_steps: ${n_obs_steps}
   n_action_steps: ${n_action_steps}
   render_obs_key: 'agentview_image'

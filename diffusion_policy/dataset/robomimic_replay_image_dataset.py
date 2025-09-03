@@ -1,3 +1,4 @@
+import random
 from typing import Dict, List
 import torch
 import numpy as np
@@ -20,7 +21,7 @@ from diffusion_policy.model.common.normalizer import LinearNormalizer, SingleFie
 from diffusion_policy.model.common.rotation_transformer import RotationTransformer
 from diffusion_policy.codecs.imagecodecs_numcodecs import register_codecs, Jpeg2k
 from diffusion_policy.common.replay_buffer import ReplayBuffer
-from diffusion_policy.common.sampler import SequenceSampler, get_val_mask
+from diffusion_policy.common.sampler import SequenceSampler, downsample_mask, get_val_mask
 from diffusion_policy.common.normalize_util import (
     robomimic_abs_action_only_normalizer_from_stat,
     robomimic_abs_action_only_dual_arm_normalizer_from_stat,
@@ -44,7 +45,8 @@ class RobomimicReplayImageDataset(BaseImageDataset):
             use_legacy_normalizer=False,
             use_cache=False,
             seed=42,
-            val_ratio=0.0
+            val_ratio=0.0,
+            max_train_episodes=None
         ):
         rotation_transformer = RotationTransformer(
             from_rep='axis_angle', to_rep=rotation_rep)
@@ -112,6 +114,13 @@ class RobomimicReplayImageDataset(BaseImageDataset):
             val_ratio=val_ratio,
             seed=seed)
         train_mask = ~val_mask
+
+        if max_train_episodes is not None:
+            train_mask = downsample_mask(
+                mask=train_mask, 
+                max_n=max_train_episodes, 
+                seed=seed)
+
         sampler = SequenceSampler(
             replay_buffer=replay_buffer, 
             sequence_length=horizon,
