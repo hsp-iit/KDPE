@@ -1,0 +1,9 @@
+
+# pixi environments
+.pixi
+*.egg-info
+# Ignore data directory contents by default, but keep rollout.hdf5
+data/*
+!data/rollout.hdf5
+# pycache
+__pycache__/
