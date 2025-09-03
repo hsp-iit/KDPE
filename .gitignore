@@ -1,10 +1,10 @@
 bin
-logs
 wandb
 outputs
 data
 data_local
 .vscode
+.numba_cache
 _wandb
 
 **/.DS_Store
@@ -12,6 +12,7 @@ _wandb
 fuse.cfg
 
 *.ai
+*.sif
 
 # Generation results
 results/
@@ -76,7 +77,6 @@ coverage.xml
 *.pot
 
 # Django stuff:
-*.log
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
@@ -138,3 +138,12 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+action_list.sh
+interactive.o*
+workbench/*
+*.mp4
+
+*.ipynb
+.bulb/
+*.png
