@@ -1,6 +1,6 @@
 defaults:
   - _self_
-  - task: lift_image_abs
+  - task: ???
 
 name: train_diffusion_unet_hybrid
 _target_: diffusion_policy.workspace.train_diffusion_unet_hybrid_workspace.TrainDiffusionUnetHybridWorkspace
@@ -124,14 +124,14 @@ checkpoint:
   save_last_snapshot: False
 
 multi_run:
-  run_dir: data/outputs/${now:%Y.%m.%d}/${now:%H.%M.%S}_${name}_${task_name}
+  run_dir: data/weights/diffusion_cnn_${task_name}_${task.dataset_type}/checkpoints
   wandb_name_base: ${now:%Y.%m.%d-%H.%M.%S}_${name}_${task_name}
 
 hydra:
   job:
     override_dirname: ${name}
   run:
-    dir: data/outputs/${now:%Y.%m.%d}/${now:%H.%M.%S}_${name}_${task_name}
+    dir: data/weights/diffusion_cnn_${task_name}_${task.dataset_type}/checkpoints
   sweep:
-    dir: data/outputs/${now:%Y.%m.%d}/${now:%H.%M.%S}_${name}_${task_name}
+    dir: data/weights/diffusion_cnn_${task_name}_${task.dataset_type}/checkpoints
     subdir: ${hydra.job.num}

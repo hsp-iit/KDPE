@@ -44,6 +44,7 @@ dependencies:
   - accelerate=0.13.2
   - datasets=2.6.1
   - diffusers=0.11.1
+  - huggingface_hub=0.23.4  # Pin to version compatible with diffusers=0.11.1
   - av=10.0.0
   - cmake=3.24.3
   # trick to avoid cpu affinity issue described in https://github.com/pytorch/pytorch/issues/99625

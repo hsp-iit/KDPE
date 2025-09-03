@@ -1,4 +1,4 @@
-name: lift_image
+name: can
 
 shape_meta: &shape_meta
   # acceptable types: rgb, low_dim
@@ -17,12 +17,12 @@ shape_meta: &shape_meta
     robot0_gripper_qpos:
       shape: [2]
   action: 
-    shape: [7]
+    shape: [10]
 
-task_name: &task_name lift
+task_name: &task_name can
 dataset_type: &dataset_type ph
-dataset_path: &dataset_path data/robomimic/datasets/${task.task_name}/${task.dataset_type}/image.hdf5
-abs_action: &abs_action False
+dataset_path: &dataset_path data/datasets/${task.task_name}/${task.dataset_type}/image_abs.hdf5
+abs_action: &abs_action True
 
 env_runner:
   _target_: diffusion_policy.env_runner.robomimic_image_runner.RobomimicImageRunner
@@ -30,10 +30,10 @@ env_runner:
   shape_meta: *shape_meta
   # costs 1GB per env
   n_train: 6
-  n_train_vis: 1
+  n_train_vis: 2
   train_start_idx: 0
   n_test: 50
-  n_test_vis: 3
+  n_test_vis: 4
   test_start_seed: 100000
   # use python's eval function as resolver, single-quoted string as argument
   max_steps: ${eval:'500 if "${task.dataset_type}" == "mh" else 400'}

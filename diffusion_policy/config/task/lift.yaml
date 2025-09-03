@@ -1,4 +1,4 @@
-name: lift_image
+name: lift
 
 shape_meta: &shape_meta
   # acceptable types: rgb, low_dim
@@ -21,7 +21,7 @@ shape_meta: &shape_meta
 
 task_name: &task_name lift
 dataset_type: &dataset_type ph
-dataset_path: &dataset_path data/robomimic/datasets/${task.task_name}/${task.dataset_type}/image_abs.hdf5
+dataset_path: &dataset_path data/${task.task_name}/${task.dataset_type}/image_abs.hdf5
 abs_action: &abs_action True
 
 env_runner:

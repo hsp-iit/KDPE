@@ -1,4 +1,5 @@
 import os
+import copy
 import wandb
 import numpy as np
 import torch
@@ -14,6 +15,7 @@ from diffusion_policy.gym_util.sync_vector_env import SyncVectorEnv
 from diffusion_policy.gym_util.multistep_wrapper import MultiStepWrapper
 from diffusion_policy.gym_util.video_recording_wrapper import VideoRecordingWrapper, VideoRecorder
 from diffusion_policy.model.common.rotation_transformer import RotationTransformer
+from diffusion_policy.env_runner.utils.shift import ShiftEnv
 
 from diffusion_policy.policy.base_image_policy import BaseImagePolicy
 from diffusion_policy.common.pytorch_util import dict_apply
@@ -30,11 +32,14 @@ def create_env(env_meta, shape_meta, enable_render=True):
         modality_mapping[attr.get('type', 'low_dim')].append(key)
     ObsUtils.initialize_obs_modality_mapping_from_dict(modality_mapping)
 
+    use_depth_obs = 'depth' in [obs.get('type', 'low_dim') for obs in shape_meta['obs'].values()]
+
     env = EnvUtils.create_env_from_metadata(
         env_meta=env_meta,
         render=False, 
         render_offscreen=enable_render,
-        use_image_obs=enable_render, 
+        use_image_obs=enable_render,
+        use_depth_obs=use_depth_obs
     )
     return env
 
@@ -86,11 +91,14 @@ class RobomimicImageRunner(BaseImageRunner):
             env_meta['env_kwargs']['controller_configs']['control_delta'] = False
             rotation_transformer = RotationTransformer('axis_angle', 'rotation_6d')
 
+        self.shift_env = ShiftEnv(seed=0)
+
         def env_fn():
             robomimic_env = create_env(
                 env_meta=env_meta, 
                 shape_meta=shape_meta
             )
+            self.shift_env(robomimic_env)
             # Robosuite's hard reset causes excessive memory consumption.
             # Disabled to run more envs.
             # https://github.com/ARISE-Initiative/robosuite/blob/92abf5595eddb3a845cd1093703e5a3ccd01e77e/robosuite/environments/base.py#L247-L248
@@ -129,6 +137,7 @@ class RobomimicImageRunner(BaseImageRunner):
                     shape_meta=shape_meta,
                     enable_render=False
                 )
+            self.shift_env(robomimic_env)
             return MultiStepWrapper(
                 VideoRecordingWrapper(
                     RobomimicImageWrapper(
@@ -278,6 +287,7 @@ class RobomimicImageRunner(BaseImageRunner):
             done = False
             while not done:
                 # create obs dict
+
                 np_obs_dict = dict(obs)
                 if self.past_action and (past_action is not None):
                     # TODO: not tested
@@ -318,6 +328,7 @@ class RobomimicImageRunner(BaseImageRunner):
             # collect data for this round
             all_video_paths[this_global_slice] = env.render()[this_local_slice]
             all_rewards[this_global_slice] = env.call('get_attr', 'reward')[this_local_slice]
+
         # clear out video buffer
         _ = env.reset()
         

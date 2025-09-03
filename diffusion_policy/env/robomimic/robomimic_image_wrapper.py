@@ -39,6 +39,8 @@ class RobomimicImageWrapper(gym.Env):
             min_value, max_value = -1, 1
             if key.endswith('image'):
                 min_value, max_value = 0, 1
+            elif key.endswith('depth'):
+                min_value, max_value = 0, 1
             elif key.endswith('quat'):
                 min_value, max_value = -1, 1
             elif key.endswith('qpos'):

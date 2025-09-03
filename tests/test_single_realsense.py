@@ -16,7 +16,7 @@ def test():
     serials = SingleRealsense.get_connected_devices_serial()
     # import pdb; pdb.set_trace()
     serial = serials[0]
-    config = json.load(open('/home/cchi/dev/diffusion_policy/diffusion_policy/real_world/realsense_config/415_high_accuracy_mode.json', 'r'))
+    config = json.load(open('dev/diffusion_policy/diffusion_policy/real_world/realsense_config/415_high_accuracy_mode.json', 'r'))
 
     def transform(data):
         color = data['color']
