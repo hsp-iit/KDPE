@@ -1,13 +1,24 @@
 <div align="center">
 
-# KDPE: Kernel Density Policy Ensemble for Diffusion Action Generation
+# KDPE: A Kernel Density Estimation Strategy for Diffusion Policy Trajectory Selection
 
-**(Code accompanying the KDPE method – submitted to CoRL 2025)**  
+[Project Page](https://hsp-iit.github.io/KDPE/) | [Paper](https://arxiv.org/abs/2508.10511v1) 
+
+**(Official implementation of KDPE – Accepted at CoRL 2025)**  
 _Fork of Diffusion Policy with population sampling + density filtering for robust visuomotor control_
 
 </div>
 
 This is the code for our work **[KDPE: A Kernel Density Estimation Strategy for Diffusion Policy Trajectory Selection](https://arxiv.org/pdf/2508.10511)**, which is based on the original [Diffusion Policy](https://github.com/real-stanford/diffusion_policy) implementation.
+
+## Table of Contents
+
+- [Installation](#installation)
+- [Datasets](#datasets)
+- [Running Experiments](#running-experiments)
+- [License](#license)
+- [Citing this work](#citation)
+
 
 ## Installation
 
@@ -77,9 +88,9 @@ To test the baseline, run:
 python eval.py --model cnn --task tool_hang_ph --Filter.name passall
 ```
 
-<!-- ## License
+## License
 
-The original Diffusion Policy code is licensed under the MIT License. The modifications introduced in this repository from commit `ad788214debba67fd201eb17a0dc31e64a2cdb45` onwards are licensed under the [Creative Commons Attribution-NonCommercial 4.0 International License](http://creativecommons.org/licenses/by-nc/4.0/). -->
+The original Diffusion Policy code is licensed under the MIT License ([licenses/LICENSE_DP](licenses/LICENSE_DP)). The modifications introduced in this repository from commit `e68659ad98540c9886b79d2deac890dada097d22` onwards are licensed under the Apache License ([licenses/LICENSE_KDPE](licenses/LICENSE_KDPE)).
 
 ## Citation
 
