@@ -62,3 +62,5 @@ env_runner:
   tqdm_interval_sec: 1.0
   train_start_idx: 0
 
+crop_shape: [216, 216]
+

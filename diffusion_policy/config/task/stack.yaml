@@ -60,3 +60,5 @@ dataset:
   use_cache: True
   seed: 42
   val_ratio: 0.02
+
+crop_shape: [76, 76]

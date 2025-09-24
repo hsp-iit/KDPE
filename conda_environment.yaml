@@ -58,7 +58,7 @@ dependencies:
     - pygame==2.1.2
     - pybullet-svl==3.1.6.4
     - robosuite @ https://github.com/ARISE-Initiative/robosuite/archive/8fb4e4bee48f43b5f4f949e6d7762dae0078c59e.tar.gz
-    - robomimic==0.3.0
+    - robomimic @ https://github.com/ARISE-Initiative/robomimic/archive/5dee58f9cc1235010d0877142b54d0e82dd23986.tar.gz
     - mimicgen @ https://github.com/NVlabs/mimicgen/archive/4c7b46e6a912c49cf9072e4c0f873e1aadd42b24.tar.gz
     - pytorchvideo==0.1.5
     # pip package required for jpeg-xl

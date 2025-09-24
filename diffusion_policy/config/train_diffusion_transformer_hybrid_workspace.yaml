@@ -38,7 +38,7 @@ policy:
   n_obs_steps: ${n_obs_steps}
   num_inference_steps: 100
 
-  crop_shape: [76, 76]
+  crop_shape: ${task.crop_shape}
   obs_encoder_group_norm: True
   eval_fixed_crop: True
 

@@ -201,7 +201,7 @@ class TrainDiffusionTransformerHybridWorkspace(BaseWorkspace):
                 policy.eval()
 
                 if (self.global_step in [40e3-1, 80e3-1]):
-                    self.save_checkpoint(path=f"{self.output_dir}/step_{self.global_step}")
+                    self.save_checkpoint(path=f"{self.output_dir}/step_{self.global_step}.ckpt")
 
                 policy.train()
 
