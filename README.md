@@ -65,16 +65,8 @@ python diffusion_policy/scripts/robomimic_dataset_conversion.py --input /path/to
 
 ## Running Experiments
 
-First, you need to train a model to obtain a checkpoint.
-
-```bash
-python train.py \
-    --config-dir diffusion_policy/config \
-    --config-name train_diffusion_unet_hybrid_workspace.yaml \
-    task=tool_hang
-```
-
-This will produce a checkpoint named `step_79999.ckpt` under the path `data/weights/diffusion_cnn_tool_hang_ph/checkpoints`.
+First, you need to download the task checkpoints from the [hugging face repository](https://huggingface.co/HSP-IIT/KDPE/blob/main/README.md)  and store it under `data/weights`.
+For example to use the CNN-based model trained on the the tool_hang task you will need to save the checkpoint in `data/weights/diffusion_cnn_tool_hang_ph/checkpoints/step_79999.ckpt`.
 
 To test our method (KDPE), run:
 
